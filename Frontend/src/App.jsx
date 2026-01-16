@@ -7,6 +7,37 @@ import Landing from './pages/Landing';
 import Quiz from './pages/Quiz';
 import Layout from './components/layout/Layout';
 
+// Public Route Wrapper (Redirects to /quiz if logged in)
+const PublicRoute = ({ children }) => {
+  const [session, setSession] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoading(false);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  if (session) {
+    return <Navigate to="/quiz" replace />;
+  }
+
+  return children;
+};
+
 // Protected Route Wrapper
 const ProtectedRoute = ({ children }) => {
   const [session, setSession] = useState(null);
@@ -43,11 +74,19 @@ function App() {
     <Router>
       <Layout>
         <Routes>
-          {/* Public Landing Page */}
-          <Route path="/" element={<Landing />} />
+          {/* Public Landing Page - Redirects if logged in */}
+          <Route path="/" element={
+            <PublicRoute>
+              <Landing />
+            </PublicRoute>
+          } />
 
-          {/* Consolidated Auth Route */}
-          <Route path="/auth" element={<Auth />} />
+          {/* Consolidated Auth Route - Redirects if logged in */}
+          <Route path="/auth" element={
+            <PublicRoute>
+              <Auth />
+            </PublicRoute>
+          } />
           <Route path="/login" element={<Navigate to="/auth" replace />} />
           <Route path="/signup" element={<Navigate to="/auth" replace />} />
 
