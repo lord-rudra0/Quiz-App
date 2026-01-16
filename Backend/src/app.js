@@ -15,8 +15,13 @@ app.use(morgan('dev'));
 app.use('/api/quiz', quizRoutes);
 
 // Health Check
+const protectedRoutes = require('./routes/protectedRoutes');
+
+// Routes
+app.use('/api/protected', protectedRoutes);
+
 app.get('/', (req, res) => {
-    res.send('Quiz API Backend Running');
+    res.send('Quiz App Backend is running');
 });
 
 module.exports = app;

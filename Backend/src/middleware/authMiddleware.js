@@ -15,7 +15,7 @@ const authMiddleware = async (req, res, next) => {
         }
 
         // Verify JWT using Supabase Legacy JWT Secret
-        const secret = process.env.SUPABASE_JWT_SECRET;
+        const secret = process.env.SUPABASE_JWT_SECRET || process.env.JWT_SECRET || process.env.JWT;
         if (!secret) {
             console.error('Missing SUPABASE_JWT_SECRET in .env');
             return res.status(500).json({ error: 'Server configuration error' });
