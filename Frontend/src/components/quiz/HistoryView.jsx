@@ -147,7 +147,7 @@ const HistoryView = ({ onBack }) => {
                                                 <line x1="12" y1="15" x2="12" y2="3"></line>
                                             </svg>
                                         </Button>
-                                        <div className={`text-xl font-bold ${attempt.score >= 4 ? 'text-green-600' : attempt.score >= 3 ? 'text-brand-600' : 'text-red-600'}`}>
+                                        <div className={`text-xl font-bold whitespace-nowrap ${attempt.score >= 4 ? 'text-green-600' : attempt.score >= 3 ? 'text-brand-600' : 'text-red-600'}`}>
                                             {attempt.score} / 5
                                         </div>
                                     </div>
