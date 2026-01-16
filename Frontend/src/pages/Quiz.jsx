@@ -32,7 +32,8 @@ const Quiz = () => {
                 return;
             }
 
-            const response = await fetch('http://localhost:5000/api/quiz', {
+            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const response = await fetch(`${API_URL}/api/quiz`, {
                 headers: {
                     'Authorization': `Bearer ${session.access_token}`
                 }
@@ -91,7 +92,8 @@ const Quiz = () => {
                 // Let's just send what we have, backend validates count.
             }
 
-            const response = await fetch('http://localhost:5000/api/quiz/submit', {
+            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const response = await fetch(`${API_URL}/api/quiz/submit`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${session.access_token}`,
