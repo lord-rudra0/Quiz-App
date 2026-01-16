@@ -9,6 +9,9 @@ const Quiz = () => {
     const [error, setError] = useState(null);
     const [user, setUser] = useState(null);
 
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [answers, setAnswers] = useState({}); // { questionId: selectedChoiceIndex }
+
     useEffect(() => {
         fetchQuiz();
         getUserDetails();
@@ -51,6 +54,23 @@ const Quiz = () => {
         }
     };
 
+    const handleAnswerSelect = (questionId, choiceIndex) => {
+        setAnswers(prev => ({
+            ...prev,
+            [questionId]: choiceIndex
+        }));
+    };
+
+    const handleNext = () => {
+        if (currentQuestionIndex < questions.length - 1) {
+            setCurrentQuestionIndex(prev => prev + 1);
+        } else {
+            // Last question - for now just alert or log
+            console.log('Quiz Finished!', answers);
+            alert('Quiz Finished! (Submission coming in next phase)');
+        }
+    };
+
     if (loading) return (
         <div className="min-h-screen flex items-center justify-center bg-brand-50">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600"></div>
@@ -72,9 +92,12 @@ const Quiz = () => {
         </div>
     );
 
+    const currentQuestion = questions[currentQuestionIndex];
+    if (!currentQuestion) return null;
+
     return (
-        <div className="min-h-screen bg-brand-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl mx-auto">
+        <div className="fixed top-16 left-0 right-0 bottom-0 overflow-hidden bg-brand-50 py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-center z-0">
+            <div className="max-w-3xl mx-auto w-full">
                 <div className="flex justify-between items-center mb-8">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900">
@@ -82,42 +105,66 @@ const Quiz = () => {
                         </h1>
                         <p className="mt-2 text-gray-600">General Knowledge Quiz</p>
                     </div>
-                </div>
-
-                <div className="space-y-6">
-                    {questions.map((q, index) => (
-                        <div key={q.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                            <div className="p-6">
-                                <h3 className="text-lg font-medium text-gray-900 mb-4">
-                                    <span className="text-brand-600 font-bold mr-2">Q{index + 1}.</span>
-                                    {q.question_text}
-                                </h3>
-
-                                <div className="space-y-3">
-                                    {q.choices ? (
-                                        q.choices.map((choice, i) => (
-                                            <div
-                                                key={i}
-                                                className="p-3 border border-gray-200 rounded-md hover:bg-brand-50 hover:border-brand-200 transition-colors cursor-pointer"
-                                            >
-                                                <span className="font-medium text-gray-500 mr-2">{String.fromCharCode(65 + i)}.</span>
-                                                {choice}
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <p className="text-red-500 text-sm">No choices available</p>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {questions.length > 0 && (
-                    <div className="mt-8 flex justify-end">
-                        <Button className="px-8" disabled>Submitting Disabled (Preview)</Button>
+                    <div className="text-right">
+                        <span className="text-sm font-medium text-brand-600 bg-brand-100 px-3 py-1 rounded-full">
+                            Question {currentQuestionIndex + 1} of {questions.length}
+                        </span>
                     </div>
-                )}
+                </div>
+
+                {/* Progress Bar */}
+                <div className="w-full bg-gray-200 rounded-full h-2.5 mb-8">
+                    <div
+                        className="bg-brand-600 h-2.5 rounded-full transition-all duration-300 ease-out"
+                        style={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}
+                    ></div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div className="p-8">
+                        <h3 className="text-xl font-medium text-gray-900 mb-6">
+                            {currentQuestion.question_text}
+                        </h3>
+
+                        <div className="space-y-3">
+                            {currentQuestion.choices ? (
+                                currentQuestion.choices.map((choice, i) => {
+                                    const isSelected = answers[currentQuestion.id] === i;
+                                    return (
+                                        <div
+                                            key={i}
+                                            onClick={() => handleAnswerSelect(currentQuestion.id, i)}
+                                            className={`p-4 border rounded-lg transition-all cursor-pointer flex items-center ${isSelected
+                                                ? 'border-brand-500 bg-brand-50 shadow-sm'
+                                                : 'border-gray-200 hover:border-brand-200 hover:bg-gray-50'
+                                                }`}
+                                        >
+                                            <div className={`w-5 h-5 rounded-full border flex items-center justify-center mr-3 ${isSelected ? 'border-brand-600 bg-brand-600' : 'border-gray-400'
+                                                }`}>
+                                                {isSelected && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                                            </div>
+                                            <span className={`font-medium ${isSelected ? 'text-brand-900' : 'text-gray-700'}`}>
+                                                {choice}
+                                            </span>
+                                        </div>
+                                    );
+                                })
+                            ) : (
+                                <p className="text-red-500 text-sm">No choices available</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-8 flex justify-end">
+                    <Button
+                        onClick={handleNext}
+                        disabled={answers[currentQuestion.id] === undefined}
+                        className="px-8 py-3 text-lg"
+                    >
+                        {currentQuestionIndex === questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
+                    </Button>
+                </div>
             </div>
         </div>
     );
