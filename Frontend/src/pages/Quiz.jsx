@@ -21,6 +21,13 @@ const Quiz = () => {
     useEffect(() => {
         fetchQuiz();
         getUserDetails();
+
+        const handleOpenHistory = () => setView('history');
+        window.addEventListener('open-history', handleOpenHistory);
+
+        return () => {
+            window.removeEventListener('open-history', handleOpenHistory);
+        };
     }, []);
 
     const getUserDetails = async () => {

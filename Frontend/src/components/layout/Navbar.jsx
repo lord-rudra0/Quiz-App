@@ -50,6 +50,18 @@ const Navbar = () => {
                     {session ? (
                         <>
                             <div className="flex items-center gap-3 text-sm text-slate-600">
+                                <button
+                                    onClick={() => window.dispatchEvent(new CustomEvent('open-history'))}
+                                    className="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-slate-100 transition-colors text-slate-600 font-medium"
+                                    title="View Quiz History"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    <span>History</span>
+                                </button>
+                                <div className="w-px h-6 bg-slate-200 mx-1"></div>
                                 <div className="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center text-brand-600">
                                     <UserIcon size={18} />
                                 </div>
