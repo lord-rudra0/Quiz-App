@@ -138,14 +138,14 @@ const HistoryView = ({ onBack }) => {
                                         <Button
                                             variant="outline"
                                             onClick={(e) => handleDownload(attempt.id, e)}
-                                            className="text-xs px-3 py-1 bg-white border-brand-200 hover:bg-brand-50 text-brand-700"
+                                            className="p-1.5 bg-white border-brand-200 hover:bg-brand-50 text-brand-700 aspect-square flex items-center justify-center rounded-md"
+                                            title="Download Results"
                                         >
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                                                 <polyline points="7 10 12 15 17 10"></polyline>
                                                 <line x1="12" y1="15" x2="12" y2="3"></line>
                                             </svg>
-                                            {/* Download */}
                                         </Button>
                                         <div className={`text-xl font-bold ${attempt.score >= 4 ? 'text-green-600' : attempt.score >= 3 ? 'text-brand-600' : 'text-red-600'}`}>
                                             {attempt.score} / 5
