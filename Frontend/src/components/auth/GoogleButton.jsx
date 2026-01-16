@@ -9,7 +9,7 @@ const GoogleButton = ({ onError, setLoading }) => {
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: window.location.origin,
+                    redirectTo: import.meta.env.VITE_FRONTEND_URL || window.location.origin,
                 },
             });
             if (error) throw error;
