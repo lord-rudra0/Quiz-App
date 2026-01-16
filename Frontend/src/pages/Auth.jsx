@@ -63,7 +63,7 @@ const Auth = () => {
                 {/* Sign Up Form Container */}
                 <div className={cn(
                     "absolute top-0 h-full transition-all duration-700 ease-in-out flex flex-col justify-center px-10 md:px-16",
-                    isSignUp ? "left-0 w-full md:w-1/2 opacity-100 z-20" : "left-0 w-1/2 opacity-0 z-10"
+                    isSignUp ? "left-0 md:left-1/2 w-full md:w-1/2 opacity-100 z-20" : "left-0 w-1/2 opacity-0 z-10"
                 )}>
                     <form className="flex flex-col gap-4 w-full" onSubmit={handleAuth}>
                         <h1 className="text-3xl font-bold text-center mb-2">Create Account</h1>
@@ -108,7 +108,7 @@ const Auth = () => {
                 {/* Sign In Form Container */}
                 <div className={cn(
                     "absolute top-0 h-full transition-all duration-700 ease-in-out flex flex-col justify-center px-10 md:px-16",
-                    !isSignUp ? "left-0 md:left-1/2 w-full md:w-1/2 opacity-100 z-20" : "left-1/2 w-1/2 opacity-0 z-10"
+                    !isSignUp ? "left-0 w-full md:w-1/2 opacity-100 z-20" : "left-1/2 w-1/2 opacity-0 z-10"
                 )}>
                     {/* Mobile Only Toggle (Visible only on small screens) */}
                     <div className="md:hidden absolute top-4 right-4">
