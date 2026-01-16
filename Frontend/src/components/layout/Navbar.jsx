@@ -67,10 +67,10 @@ const Navbar = () => {
                         </>
                     ) : (
                         <>
-                            <Link to="/login" className="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">
+                            <Link to="/auth" className="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">
                                 Login
                             </Link>
-                            <Link to="/signup">
+                            <Link to="/auth">
                                 <Button className="w-auto px-6 py-2">Sign Up</Button>
                             </Link>
                         </>
@@ -118,13 +118,13 @@ const Navbar = () => {
                             ) : (
                                 <>
                                     <Link
-                                        to="/login"
+                                        to="/auth"
                                         onClick={() => setIsMenuOpen(false)}
                                         className="block w-full text-center py-2 text-slate-600 hover:text-brand-600 font-medium"
                                     >
                                         Login
                                     </Link>
-                                    <Link to="/signup" onClick={() => setIsMenuOpen(false)}>
+                                    <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
                                         <Button className="w-full">Sign Up</Button>
                                     </Link>
                                 </>
