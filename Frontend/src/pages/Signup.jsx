@@ -7,6 +7,7 @@ import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 
 const Signup = () => {
+    const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -22,6 +23,11 @@ const Signup = () => {
             const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
+                options: {
+                    data: {
+                        full_name: fullName,
+                    },
+                },
             });
 
             if (error) throw error;
@@ -59,6 +65,14 @@ const Signup = () => {
                 )}
 
                 <form onSubmit={handleSignup} className="space-y-6">
+                    <Input
+                        label="Full Name"
+                        type="text"
+                        placeholder="John Doe"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        required
+                    />
                     <Input
                         label="Email"
                         type="email"
