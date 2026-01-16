@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabaseClient';
 import LoadingState from '../components/quiz/LoadingState';
 import ErrorState from '../components/quiz/ErrorState';
 import ResultsView from '../components/quiz/ResultsView';
+import HistoryView from '../components/quiz/HistoryView';
 import QuestionCard from '../components/quiz/QuestionCard';
 
 const Quiz = () => {
@@ -15,6 +16,7 @@ const Quiz = () => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [answers, setAnswers] = useState({}); // { questionId: selectedChoiceIndex }
     const [result, setResult] = useState(null);
+    const [view, setView] = useState('quiz'); // 'quiz' | 'history'
 
     useEffect(() => {
         fetchQuiz();
@@ -114,11 +116,16 @@ const Quiz = () => {
 
     if (error) return <ErrorState error={error} onRetry={fetchQuiz} />;
 
+    if (view === 'history') {
+        return <HistoryView onBack={() => setView('quiz')} />;
+    }
+
     if (result) return (
         <ResultsView
             result={result}
             questions={questions}
             onRetry={() => window.location.reload()}
+            onViewHistory={() => setView('history')}
         />
     );
 
@@ -134,6 +141,7 @@ const Quiz = () => {
             user={user}
             onAnswerSelect={handleAnswerSelect}
             onNext={handleNext}
+            onViewHistory={() => setView('history')}
         />
     );
 };

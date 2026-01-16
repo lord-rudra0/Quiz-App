@@ -9,7 +9,8 @@ const QuestionCard = ({
     answers,
     user,
     onAnswerSelect,
-    onNext
+    onNext,
+    onViewHistory
 }) => {
     // 0-based index for display logic
     const isAnswered = answers[question.id] !== undefined;
@@ -25,7 +26,14 @@ const QuestionCard = ({
                         </h1>
                         <p className="mt-2 text-gray-600">General Knowledge Quiz</p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-right flex items-center gap-4">
+                        <Button
+                            variant="outline"
+                            onClick={onViewHistory}
+                            className="text-sm px-3 py-1 border-brand-200 text-brand-700 hover:bg-brand-50"
+                        >
+                            History
+                        </Button>
                         <span className="text-sm font-medium text-brand-600 bg-brand-100 px-3 py-1 rounded-full">
                             Question {index + 1} of {totalQuestions}
                         </span>

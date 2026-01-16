@@ -2,11 +2,17 @@
 import React from 'react';
 import Button from '../ui/Button';
 
-const ResultsView = ({ result, questions, onRetry }) => {
+const ResultsView = ({ result, questions, onRetry, onViewHistory }) => {
     return (
         <div className="fixed top-16 left-0 right-0 bottom-0 overflow-hidden bg-brand-50 py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-center z-0">
             <div className="max-w-2xl mx-auto w-full bg-white rounded-lg shadow-lg overflow-hidden flex flex-col max-h-[80vh]">
-                <div className="p-8 border-b border-gray-100 text-center">
+                <div className="p-8 border-b border-gray-100 text-center relative">
+                    <button
+                        onClick={onViewHistory}
+                        className="absolute top-4 right-4 text-sm text-gray-400 hover:text-brand-600 font-medium"
+                    >
+                        History
+                    </button>
                     <h2 className="text-3xl font-bold text-gray-900 mb-2">Quiz Results</h2>
                     <div className="text-5xl font-extrabold text-brand-600 mb-4">{result.score}</div>
                     <p className="text-gray-600">Great job! Here is how you did:</p>

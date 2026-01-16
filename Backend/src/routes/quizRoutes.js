@@ -166,6 +166,59 @@ router.post('/submit', async (req, res) => {
     }
 });
 
+// 3. GET /history - Fetch user's quiz history with details
+router.get('/history', async (req, res) => {
+    try {
+        // Create authenticated client
+        const supabase = createClient(
+            process.env.SUPABASE_URL,
+            process.env.SUPABASE_ANON_KEY,
+            {
+                global: {
+                    headers: {
+                        Authorization: req.headers.authorization,
+                    },
+                },
+            }
+        );
+
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        if (authError || !user) return res.status(401).json({ error: 'Unauthorized' });
+
+        const userId = user.id;
+
+        // Fetch attempts with nested answers and questions
+        const { data, error } = await supabase
+            .from('quiz_attempts')
+            .select(`
+                id,
+                score,
+                started_at,
+                finished_at,
+                quiz_answers (
+                    id,
+                    selected_choice,
+                    is_correct,
+                    question:quiz_questions (
+                        id,
+                        question_text,
+                        choices,
+                        correct_choice
+                    )
+                )
+            `)
+            .eq('user_id', userId)
+            .order('finished_at', { ascending: false });
+
+        if (error) throw error;
+
+        res.json(data);
+    } catch (error) {
+        console.error('Error fetching history:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // 3. GET /results - History
 router.get('/results', async (req, res) => {
     try {
