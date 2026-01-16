@@ -11,7 +11,6 @@ router.get('/', quizController.getQuizQuestions);
 router.post('/submit', quizController.submitQuiz);
 router.get('/history', quizController.getHistory);
 router.get('/history/:attemptId', quizController.getAttemptDetails);
-router.get('/results', quizController.getResults);
 router.get('/download/:attemptId', quizController.downloadAttempt);
 
 module.exports = router;
