@@ -144,11 +144,14 @@ const HistoryView = ({ onBack }) => {
                                             variant="outline"
                                             onClick={(e) => handleDownload(attempt.id, e)}
                                             disabled={downloadingIds[attempt.id]}
-                                            className="p-1.5 bg-white border-brand-200 hover:bg-brand-50 text-brand-700 aspect-square flex items-center justify-center rounded-md disabled:opacity-100 disabled:cursor-wait"
+                                            className={`p-1.5 border-brand-200 text-brand-700 aspect-square flex items-center justify-center rounded-md disabled:cursor-wait ${downloadingIds[attempt.id]
+                                                    ? 'bg-brand-100 opacity-100 border-brand-300'
+                                                    : 'bg-white hover:bg-brand-50'
+                                                }`}
                                             title="Download Results"
                                         >
                                             {downloadingIds[attempt.id] ? (
-                                                <svg className="animate-spin h-4 w-4 text-brand-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <svg className="animate-spin h-5 w-5 text-brand-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                                 </svg>

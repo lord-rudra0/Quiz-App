@@ -89,6 +89,13 @@ const Auth = () => {
                     "absolute top-0 h-full transition-all duration-700 ease-in-out flex flex-col justify-center px-10 md:px-16",
                     isSignUp ? "left-0 md:left-1/2 w-full md:w-1/2 opacity-100 z-20" : "left-0 w-1/2 opacity-0 z-10"
                 )}>
+                    {/* Mobile Only Toggle */}
+                    <div className="md:hidden absolute top-4 right-4">
+                        <button onClick={toggleMode} className="text-sm text-brand-600 font-semibold">
+                            Login
+                        </button>
+                    </div>
+
                     <form className="flex flex-col gap-4 w-full" onSubmit={handleAuth}>
                         <h1 className="text-3xl font-bold text-center mb-2">Create Account</h1>
                         <div className="flex justify-center gap-4 mb-4 w-full">
@@ -126,6 +133,17 @@ const Auth = () => {
                         <Button type="submit" isLoading={loading} className="rounded-lg bg-brand-800 hover:bg-brand-900 mt-2 py-3">
                             SIGN UP
                         </Button>
+
+                        <div className="mt-4 text-center">
+                            <span className="text-gray-500 text-sm">Already have an account? </span>
+                            <button
+                                type="button"
+                                onClick={toggleMode}
+                                className="text-brand-700 font-semibold text-sm hover:underline focus:outline-none"
+                            >
+                                Login
+                            </button>
+                        </div>
                     </form>
                 </div>
 
