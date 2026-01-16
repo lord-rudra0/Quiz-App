@@ -78,7 +78,7 @@ const Quiz = () => {
 
             // Format answers for API
             const formattedAnswers = Object.entries(answers).map(([qId, choiceIdx]) => ({
-                question_id: parseInt(qId),
+                question_id: qId,
                 selected_choice: choiceIdx
             }));
 
