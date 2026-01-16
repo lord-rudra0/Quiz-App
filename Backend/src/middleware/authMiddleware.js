@@ -1,5 +1,5 @@
 
-const jwt = require('jsonwebtoken');
+const supabase = require('../config/supabaseClient');
 require('dotenv').config();
 
 const authMiddleware = async (req, res, next) => {
@@ -14,29 +14,18 @@ const authMiddleware = async (req, res, next) => {
             return res.status(401).json({ error: 'Missing Bearer token' });
         }
 
-        // Verify JWT using Supabase Legacy JWT Secret
-        const secret = process.env.SUPABASE_JWT_SECRET || process.env.JWT_SECRET || process.env.JWT;
-        if (!secret) {
-            console.error('Missing SUPABASE_JWT_SECRET in .env');
-            return res.status(500).json({ error: 'Server configuration error' });
+        // Verify with Supabase Auth
+        // This handles both HS256 and ES256 tokens automatically
+        const { data: { user }, error } = await supabase.auth.getUser(token);
+
+        if (error || !user) {
+            console.error('Supabase Auth Error:', error?.message);
+            return res.status(403).json({ error: 'Invalid or expired token' });
         }
 
-        jwt.verify(token, secret, (err, decoded) => {
-            if (err) {
-                console.error('JWT Verification Failed:', err.message);
-                return res.status(403).json({ error: 'Invalid or expired token' });
-            }
-
-            // Extract user ID from 'sub' claim
-            req.user = {
-                id: decoded.sub,
-                email: decoded.email,
-                role: decoded.role,
-                app_metadata: decoded.app_metadata,
-                user_metadata: decoded.user_metadata
-            };
-            next();
-        });
+        // Attach user to request
+        req.user = user;
+        next();
 
     } catch (error) {
         console.error('Auth Middleware Error:', error);

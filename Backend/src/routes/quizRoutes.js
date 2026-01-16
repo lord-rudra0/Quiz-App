@@ -7,9 +7,24 @@ const authMiddleware = require('../middleware/authMiddleware');
 // Apply auth middleware to all routes
 router.use(authMiddleware);
 
+const { createClient } = require('@supabase/supabase-js');
+
 // 1. GET / - Fetch 5 random questions
 router.get('/', async (req, res) => {
     try {
+        // Create an authenticated client for this request to respect RLS
+        const supabase = createClient(
+            process.env.SUPABASE_URL,
+            process.env.SUPABASE_ANON_KEY,
+            {
+                global: {
+                    headers: {
+                        Authorization: req.headers.authorization,
+                    },
+                },
+            }
+        );
+
         // Strategy: Fetch all IDs, pick 5 random, then fetch details
         // Note: This is fine for a small/medium number of questions.
         const { data: allIds, error: idError } = await supabase
@@ -20,6 +35,7 @@ router.get('/', async (req, res) => {
         if (idError) throw idError;
 
         if (!allIds || allIds.length === 0) {
+            console.log('Query returned 0 rows. RLS or Filter issue?');
             return res.status(404).json({ error: 'No questions found' });
         }
 
