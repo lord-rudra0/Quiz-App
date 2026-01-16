@@ -56,7 +56,7 @@ const Auth = () => {
     };
 
     return (
-        <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-brand-50 p-4">
+        <div className="flex-grow w-full flex items-center justify-center bg-brand-50 p-4">
             {/* Main Container */}
             <div className="relative bg-white rounded-[30px] shadow-2xl overflow-hidden w-full max-w-[900px] min-h-[600px] flex">
 
