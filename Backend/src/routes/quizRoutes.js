@@ -117,7 +117,8 @@ router.post('/submit', async (req, res) => {
             results.push({
                 question_id: ans.question_id,
                 is_correct: isCorrect,
-                correct_choice: correctChoice // Send back index so frontend can show "Correct Answer: X"
+                correct_choice: correctChoice,
+                selected_choice: ans.selected_choice // Send back what user picked
             });
 
             answersToInsert.push({

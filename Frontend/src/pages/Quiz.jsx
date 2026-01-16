@@ -144,11 +144,16 @@ const Quiz = () => {
                                         {res.is_correct ? 'Correct' : 'Incorrect'}
                                     </span>
                                 </div>
-                                {!res.is_correct && (
-                                    <div className="text-sm text-red-700">
-                                        <span className="font-semibold">Correct Answer:</span> {q?.choices[res.correct_choice]}
+                                <div className="text-sm space-y-1">
+                                    <div className={res.is_correct ? 'text-green-700' : 'text-red-700'}>
+                                        <span className="font-semibold">Your Answer:</span> {q?.choices[res.selected_choice] || 'Skipped'}
                                     </div>
-                                )}
+                                    {!res.is_correct && (
+                                        <div className="text-green-700">
+                                            <span className="font-semibold">Correct Answer:</span> {q?.choices[res.correct_choice]}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         );
                     })}
