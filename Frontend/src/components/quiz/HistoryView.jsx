@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import Button from '../ui/Button';
@@ -75,6 +74,9 @@ const HistoryView = ({ onBack }) => {
 
     const handleDownload = async (id, e) => {
         e.stopPropagation(); // Prevent toggling expand
+        setDownloadingIds(prev => ({ ...prev, [id]: true }));
+        // Artificial delay to show loader (remove in production if undesired)
+        await new Promise(resolve => setTimeout(resolve, 2000));
         try {
             const { data: { session } } = await supabase.auth.getSession();
             const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -99,6 +101,8 @@ const HistoryView = ({ onBack }) => {
         } catch (err) {
             console.error('Download error:', err);
             alert('Failed to download results.');
+        } finally {
+            setDownloadingIds(prev => ({ ...prev, [id]: false }));
         }
     };
 
@@ -140,7 +144,7 @@ const HistoryView = ({ onBack }) => {
                                             variant="outline"
                                             onClick={(e) => handleDownload(attempt.id, e)}
                                             disabled={downloadingIds[attempt.id]}
-                                            className="p-1.5 bg-white border-brand-200 hover:bg-brand-50 text-brand-700 aspect-square flex items-center justify-center rounded-md disabled:opacity-50"
+                                            className="p-1.5 bg-white border-brand-200 hover:bg-brand-50 text-brand-700 aspect-square flex items-center justify-center rounded-md disabled:opacity-100 disabled:cursor-wait"
                                             title="Download Results"
                                         >
                                             {downloadingIds[attempt.id] ? (
