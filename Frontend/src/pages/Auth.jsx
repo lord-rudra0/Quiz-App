@@ -1,11 +1,12 @@
 
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
-import { cn } from '../lib/utils'; // Assuming this utility exists
+import { cn } from '../lib/utils';
+import GoogleButton from '../components/auth/GoogleButton';
+import AuthOverlay from '../components/auth/AuthOverlay';
 
 const Auth = () => {
     const [isSignUp, setIsSignUp] = useState(false);
@@ -34,13 +35,13 @@ const Auth = () => {
                 });
                 if (error) throw error;
                 alert('Signup successful! Please check your email.');
-                // Don't auto-switch, let them check email or switch manually if desired
             } else {
                 const { error } = await supabase.auth.signInWithPassword({
                     email,
                     password,
                 });
                 if (error) throw error;
+                // The App component will redirect to / as session changes
                 navigate('/');
             }
         } catch (err) {
@@ -67,8 +68,8 @@ const Auth = () => {
                 )}>
                     <form className="flex flex-col gap-4 w-full" onSubmit={handleAuth}>
                         <h1 className="text-3xl font-bold text-center mb-2">Create Account</h1>
-                        <div className="flex justify-center gap-4 mb-4">
-                            {/* Social Icons Placeholders if needed */}
+                        <div className="flex justify-center gap-4 mb-4 w-full">
+                            <GoogleButton onError={setError} setLoading={setLoading} />
                         </div>
                         <span className="text-sm text-center text-gray-400 mb-4">or use your email for registration</span>
 
@@ -110,7 +111,7 @@ const Auth = () => {
                     "absolute top-0 h-full transition-all duration-700 ease-in-out flex flex-col justify-center px-10 md:px-16",
                     !isSignUp ? "left-0 w-full md:w-1/2 opacity-100 z-20" : "left-1/2 w-1/2 opacity-0 z-10"
                 )}>
-                    {/* Mobile Only Toggle (Visible only on small screens) */}
+                    {/* Mobile Only Toggle */}
                     <div className="md:hidden absolute top-4 right-4">
                         <button onClick={toggleMode} className="text-sm text-brand-600 font-semibold">
                             {isSignUp ? "Login" : "Create Account"}
@@ -119,8 +120,8 @@ const Auth = () => {
 
                     <form className="flex flex-col gap-4 w-full" onSubmit={handleAuth}>
                         <h1 className="text-3xl font-bold text-center mb-2">Sign In</h1>
-                        <div className="flex justify-center gap-4 mb-4">
-                            {/* Social Icons */}
+                        <div className="flex justify-center gap-4 mb-4 w-full">
+                            <GoogleButton onError={setError} setLoading={setLoading} />
                         </div>
                         <span className="text-sm text-center text-gray-400 mb-4">or use your email password</span>
 
@@ -151,52 +152,12 @@ const Auth = () => {
                     </form>
                 </div>
 
-                {/* Overlay Container (Desktop Only) */}
-                <div className={cn(
-                    "hidden md:block absolute top-0 left-1/2 w-1/2 h-full overflow-hidden transition-transform duration-700 ease-in-out z-50",
-                    isSignUp ? "-translate-x-full rounded-r-[100px] rounded-l-none" : "rounded-l-[100px]"
-                )}>
-                    <div className={cn(
-                        "relative -left-full h-full w-[200%] bg-gradient-to-r from-brand-700 to-brand-900 text-white transform transition-transform duration-700 ease-in-out",
-                        isSignUp ? "translate-x-1/2" : "translate-x-0"
-                    )}>
-
-                        {/* Left Overlay Panel (For Sign In View -> Shows 'Welcome Back') */}
-                        <div className={cn(
-                            "absolute top-0 left-0 w-1/2 h-full flex flex-col items-center justify-center px-12 text-center transform transition-transform duration-700 ease-in-out",
-                            isSignUp ? "translate-x-0" : "-translate-x-[20%]"
-                        )}>
-                            <h1 className="text-4xl font-bold mb-4">Welcome Back!</h1>
-                            <p className="mb-8 text-brand-100">Enter your personal details to use all of site features</p>
-                            <button
-                                onClick={toggleMode}
-                                className="bg-transparent border-2 border-white text-white rounded-lg px-12 py-3 font-semibold hover:bg-white hover:text-brand-800 transition-colors"
-                            >
-                                SIGN IN
-                            </button>
-                        </div>
-
-                        {/* Right Overlay Panel (For Sign Up View -> Shows 'Hello Friend') */}
-                        <div className={cn(
-                            "absolute top-0 right-0 w-1/2 h-full flex flex-col items-center justify-center px-12 text-center transform transition-transform duration-700 ease-in-out",
-                            !isSignUp ? "translate-x-0" : "translate-x-[20%]"
-                        )}>
-                            <h1 className="text-4xl font-bold mb-4">Hello, Friend!</h1>
-                            <p className="mb-8 text-brand-100">Register with your personal details to use all of site features</p>
-                            <button
-                                onClick={toggleMode}
-                                className="bg-transparent border-2 border-white text-white rounded-lg px-12 py-3 font-semibold hover:bg-white hover:text-brand-800 transition-colors"
-                            >
-                                SIGN UP
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
+                <AuthOverlay isSignUp={isSignUp} toggleMode={toggleMode} />
 
             </div>
         </div>
     );
 };
+
 
 export default Auth;
