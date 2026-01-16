@@ -17,7 +17,7 @@ const QuestionCard = ({
     const isLastQuestion = index === totalQuestions - 1;
 
     return (
-        <div className="fixed top-16 left-0 right-0 bottom-0 overflow-hidden bg-brand-50 py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-center z-0">
+        <div className="fixed top-16 left-0 right-0 bottom-0 overflow-y-auto bg-brand-50 py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-start z-0">
             <div className="max-w-3xl mx-auto w-full">
                 <div className="flex justify-between items-center mb-8">
                     <div>
@@ -87,6 +87,8 @@ const QuestionCard = ({
                     </Button>
                 </div>
             </div>
+            {/* Mobile Footer Spacer */}
+            <div className="h-20 w-full md:hidden flex-shrink-0"></div>
         </div>
     );
 };
