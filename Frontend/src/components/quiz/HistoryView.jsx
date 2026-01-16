@@ -72,6 +72,35 @@ const HistoryView = ({ onBack }) => {
         }
     };
 
+    const handleDownload = async (id, e) => {
+        e.stopPropagation(); // Prevent toggling expand
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+            const response = await fetch(`${API_URL}/api/quiz/download/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${session.access_token}`
+                }
+            });
+
+            if (!response.ok) throw new Error('Download failed');
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `quiz-result-${id.slice(0, 8)}.json`; // Shorter name
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } catch (err) {
+            console.error('Download error:', err);
+            alert('Failed to download results.');
+        }
+    };
+
     if (loading) return <div className="p-8 text-center text-gray-500">Loading history...</div>;
     if (error) return <div className="p-8 text-center text-red-500">Error: {error}</div>;
 
@@ -105,8 +134,22 @@ const HistoryView = ({ onBack }) => {
                                             {expandedId === attempt.id ? 'Click to collapse' : 'Click to view details'}
                                         </div>
                                     </div>
-                                    <div className={`text-xl font-bold ${attempt.score >= 4 ? 'text-green-600' : attempt.score >= 3 ? 'text-brand-600' : 'text-red-600'}`}>
-                                        {attempt.score} / 5
+                                    <div className="flex items-center gap-4">
+                                        <Button
+                                            variant="outline"
+                                            onClick={(e) => handleDownload(attempt.id, e)}
+                                            className="text-xs px-3 py-1 bg-white border-brand-200 hover:bg-brand-50 text-brand-700"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                <polyline points="7 10 12 15 17 10"></polyline>
+                                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                                            </svg>
+                                            Download
+                                        </Button>
+                                        <div className={`text-xl font-bold ${attempt.score >= 4 ? 'text-green-600' : attempt.score >= 3 ? 'text-brand-600' : 'text-red-600'}`}>
+                                            {attempt.score} / 5
+                                        </div>
                                     </div>
                                 </div>
 
