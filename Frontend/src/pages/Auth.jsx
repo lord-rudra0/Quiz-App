@@ -26,7 +26,7 @@ const Auth = () => {
 
         try {
             if (isSignUp) {
-                const { error } = await supabase.auth.signUp({
+                const { data, error } = await supabase.auth.signUp({
                     email,
                     password,
                     options: {
@@ -34,6 +34,14 @@ const Auth = () => {
                     },
                 });
                 if (error) throw error;
+
+                // Supabase returns an empty identities array if the user already exists 
+                // and email confirmation is enabled (to prevent enumeration by default).
+                // We check for this to provide better UX.
+                if (data.user && data.user.identities && data.user.identities.length === 0) {
+                    throw new Error('User already registered');
+                }
+
                 alert('Signup successful! Please check your email.');
             } else {
                 const { error } = await supabase.auth.signInWithPassword({
@@ -45,7 +53,21 @@ const Auth = () => {
                 navigate('/');
             }
         } catch (err) {
-            setError(err.message);
+            if (err.message.includes('User already registered') || err.message.includes('already registered')) {
+                setError(
+                    <span className="flex flex-col gap-1 items-center">
+                        <span>This email is already registered.</span>
+                        <button
+                            onClick={toggleMode}
+                            className="font-bold underline text-brand-700 hover:text-brand-900"
+                        >
+                            Sign In instead?
+                        </button>
+                    </span>
+                );
+            } else {
+                setError(err.message);
+            }
         } finally {
             setLoading(false);
         }
