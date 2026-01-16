@@ -154,6 +154,19 @@ const Navbar = () => {
                                         </div>
                                     </div>
                                     <button
+                                        onClick={() => {
+                                            window.dispatchEvent(new CustomEvent('open-history'));
+                                            setIsMenuOpen(false);
+                                        }}
+                                        className="flex w-full items-center justify-center gap-2 px-4 py-2 rounded-lg bg-brand-50 text-brand-700 font-medium hover:bg-brand-100 transition-colors"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                        </svg>
+                                        View History
+                                    </button>
+                                    <button
                                         onClick={handleLogout}
                                         className="flex w-full items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-50 text-red-600 font-medium hover:bg-red-100 transition-colors"
                                     >
