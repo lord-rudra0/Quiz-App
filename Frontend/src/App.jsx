@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { supabase } from './lib/supabaseClient';
 import Auth from './pages/Auth';
+import Landing from './pages/Landing';
 import Layout from './components/layout/Layout';
 
 // Protected Route Wrapper
@@ -70,6 +71,9 @@ function App() {
     <Router>
       <Layout>
         <Routes>
+          {/* Public Landing Page */}
+          <Route path="/" element={<Landing />} />
+
           {/* Consolidated Auth Route */}
           <Route path="/auth" element={<Auth />} />
           <Route path="/login" element={<Navigate to="/auth" replace />} />
@@ -77,7 +81,7 @@ function App() {
 
           {/* Protected Dashboard Route */}
           <Route
-            path="/"
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <Dashboard />
