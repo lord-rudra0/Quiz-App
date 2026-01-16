@@ -145,7 +145,7 @@ const HistoryView = ({ onBack }) => {
                                                 <polyline points="7 10 12 15 17 10"></polyline>
                                                 <line x1="12" y1="15" x2="12" y2="3"></line>
                                             </svg>
-                                            Download
+                                            {/* Download */}
                                         </Button>
                                         <div className={`text-xl font-bold ${attempt.score >= 4 ? 'text-green-600' : attempt.score >= 3 ? 'text-brand-600' : 'text-red-600'}`}>
                                             {attempt.score} / 5
