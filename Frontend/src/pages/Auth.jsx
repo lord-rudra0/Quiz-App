@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
@@ -9,7 +9,8 @@ import GoogleButton from '../components/auth/GoogleButton';
 import AuthOverlay from '../components/auth/AuthOverlay';
 
 const Auth = () => {
-    const [isSignUp, setIsSignUp] = useState(false);
+    const location = useLocation();
+    const [isSignUp, setIsSignUp] = useState(location.state?.isSignUp || false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();

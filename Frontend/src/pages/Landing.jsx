@@ -27,20 +27,21 @@ const Landing = () => {
                             Master any subject with <span className="text-brand-600">Quiz App</span>
                         </h1>
                         <p className="text-xl md:text-2xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-                            The smartest way to learn. Create custom quizzes, challenge friends, and track your progress in real-time.
+                            The smartest way to learn. and track your progress in real-time.
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <Link to="/auth">
+                            <Link to="/auth" state={{ isSignUp: true }}>
                                 <Button className="text-lg px-8 py-4 rounded-full shadow-lg shadow-brand-500/20 hover:shadow-brand-500/40 transform hover:-translate-y-1 transition-all">
                                     Get Started Free
                                 </Button>
                             </Link>
-                            <Link to="#features">
-                                <button className="px-8 py-4 rounded-full text-lg font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
-                                    Learn More
-                                </button>
-                            </Link>
+                            <button
+                                onClick={() => document.getElementById('features').scrollIntoView({ behavior: 'smooth' })}
+                                className="px-8 py-4 rounded-full text-lg font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm"
+                            >
+                                Learn More
+                            </button>
                         </div>
                     </motion.div>
                 </div>
@@ -57,15 +58,17 @@ const Landing = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
                         <FeatureCard
                             icon={<Brain className="w-8 h-8 text-brand-600" />}
-                            title="Smart Learning"
+                            title="AI-powered Quiz"
                             description="Our AI-powered system adapts to your learning pace and focuses on areas that need improvement."
                             delay={0.1}
+                            badge="Coming Soon"
                         />
                         <FeatureCard
                             icon={<Zap className="w-8 h-8 text-yellow-500" />}
                             title="Real-time Battles"
                             description="Challenge your friends or random opponents to live quiz battles and climb the leaderboard."
                             delay={0.2}
+                            badge="Coming Soon"
                         />
                         <FeatureCard
                             icon={<Trophy className="w-8 h-8 text-orange-500" />}
@@ -92,14 +95,19 @@ const Landing = () => {
     );
 };
 
-const FeatureCard = ({ icon, title, description, delay }) => (
+const FeatureCard = ({ icon, title, description, delay, badge }) => (
     <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5, delay }}
-        className="bg-slate-50 p-8 rounded-2xl hover:shadow-xl hover:shadow-brand-100 transition-all duration-300 border border-slate-100 hover:border-brand-200 group"
+        className="bg-slate-50 p-8 rounded-2xl hover:shadow-xl hover:shadow-brand-100 transition-all duration-300 border border-slate-100 hover:border-brand-200 group relative overflow-hidden"
     >
+        {badge && (
+            <div className="absolute top-4 right-4 bg-brand-100 text-brand-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                {badge}
+            </div>
+        )}
         <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
             {icon}
         </div>

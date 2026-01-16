@@ -71,7 +71,7 @@ const Navbar = () => {
                                 Login
                             </Link>
                             <Link to="/auth">
-                                <Button className="w-auto px-6 py-2">Sign Up</Button>
+                                <Button className="w-auto px-6 py-2 ring-2 ring-brand-200 shadow-lg shadow-brand-500/20">Sign Up</Button>
                             </Link>
                         </>
                     )}
@@ -125,7 +125,7 @@ const Navbar = () => {
                                         Login
                                     </Link>
                                     <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                                        <Button className="w-full">Sign Up</Button>
+                                        <Button className="w-full ring-2 ring-brand-200 shadow-md">Sign Up</Button>
                                     </Link>
                                 </>
                             )}
