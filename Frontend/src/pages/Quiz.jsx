@@ -138,12 +138,17 @@ const Quiz = () => {
                         const q = questions.find(q => q.id === res.question_id);
                         return (
                             <div key={res.question_id} className={`p-4 rounded-lg border ${res.is_correct ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
-                                <div className="flex justify-between items-start">
+                                <div className="flex justify-between items-start mb-2">
                                     <div className="font-medium text-gray-900">{idx + 1}. {q?.question_text}</div>
                                     <span className={`text-sm font-bold ${res.is_correct ? 'text-green-700' : 'text-red-700'}`}>
                                         {res.is_correct ? 'Correct' : 'Incorrect'}
                                     </span>
                                 </div>
+                                {!res.is_correct && (
+                                    <div className="text-sm text-red-700">
+                                        <span className="font-semibold">Correct Answer:</span> {q?.choices[res.correct_choice]}
+                                    </div>
+                                )}
                             </div>
                         );
                     })}

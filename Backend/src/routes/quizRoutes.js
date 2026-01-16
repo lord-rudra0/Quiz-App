@@ -116,7 +116,8 @@ router.post('/submit', async (req, res) => {
 
             results.push({
                 question_id: ans.question_id,
-                is_correct: isCorrect
+                is_correct: isCorrect,
+                correct_choice: correctChoice // Send back index so frontend can show "Correct Answer: X"
             });
 
             answersToInsert.push({
@@ -149,6 +150,8 @@ router.post('/submit', async (req, res) => {
             .insert(finalAnswers);
 
         if (ansInsertError) throw ansInsertError;
+
+        console.log('Submission Results:', JSON.stringify(results, null, 2));
 
         res.json({
             score: `${score} / 5`,
