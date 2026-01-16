@@ -8,6 +8,8 @@ const HistoryView = ({ onBack }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [expandedId, setExpandedId] = useState(null);
+    const [detailsCache, setDetailsCache] = useState({}); // { attemptId: answers[] }
+    const [loadingDetails, setLoadingDetails] = useState({}); // { attemptId: boolean }
 
     useEffect(() => {
         fetchHistory();
@@ -36,8 +38,38 @@ const HistoryView = ({ onBack }) => {
         }
     };
 
-    const toggleExpand = (id) => {
-        setExpandedId(expandedId === id ? null : id);
+    const toggleExpand = async (id) => {
+        if (expandedId === id) {
+            setExpandedId(null);
+            return;
+        }
+
+        setExpandedId(id);
+
+        // If details not cached, fetch them
+        if (!detailsCache[id]) {
+            setLoadingDetails(prev => ({ ...prev, [id]: true }));
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+                const response = await fetch(`${API_URL}/api/quiz/history/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${session.access_token}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch details');
+
+                const data = await response.json();
+                setDetailsCache(prev => ({ ...prev, [id]: data }));
+            } catch (err) {
+                console.error(err);
+                // Optionally handle specific error for this item
+            } finally {
+                setLoadingDetails(prev => ({ ...prev, [id]: false }));
+            }
+        }
     };
 
     if (loading) return <div className="p-8 text-center text-gray-500">Loading history...</div>;
@@ -70,7 +102,7 @@ const HistoryView = ({ onBack }) => {
                                             {new Date(attempt.finished_at).toLocaleDateString()} at {new Date(attempt.finished_at).toLocaleTimeString()}
                                         </div>
                                         <div className="text-sm text-gray-500">
-                                            Click to view details
+                                            {expandedId === attempt.id ? 'Click to collapse' : 'Click to view details'}
                                         </div>
                                     </div>
                                     <div className={`text-xl font-bold ${attempt.score >= 4 ? 'text-green-600' : attempt.score >= 3 ? 'text-brand-600' : 'text-red-600'}`}>
@@ -80,28 +112,36 @@ const HistoryView = ({ onBack }) => {
 
                                 {expandedId === attempt.id && (
                                     <div className="p-4 bg-white border-t border-gray-200 space-y-3">
-                                        {attempt.quiz_answers.map((ans, idx) => (
-                                            <div key={ans.id} className={`p-3 rounded border ${ans.is_correct ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`}>
-                                                <div className="flex justify-between">
-                                                    <span className="font-medium text-gray-800">
-                                                        {idx + 1}. {ans.question.question_text}
-                                                    </span>
-                                                    <span className={`text-sm font-bold ${ans.is_correct ? 'text-green-700' : 'text-red-700'}`}>
-                                                        {ans.is_correct ? 'Correct' : 'Incorrect'}
-                                                    </span>
-                                                </div>
-                                                <div className="mt-1 text-sm">
-                                                    <span className={ans.is_correct ? 'text-green-700' : 'text-red-700'}>
-                                                        Your Answer: {ans.question.choices[ans.selected_choice]}
-                                                    </span>
-                                                    {!ans.is_correct && (
-                                                        <span className="ml-4 text-green-700">
-                                                            Correct: {ans.question.choices[ans.question.correct_choice]}
-                                                        </span>
-                                                    )}
-                                                </div>
+                                        {loadingDetails[attempt.id] ? (
+                                            <div className="flex justify-center p-4">
+                                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div>
                                             </div>
-                                        ))}
+                                        ) : detailsCache[attempt.id] ? (
+                                            detailsCache[attempt.id].map((ans, idx) => (
+                                                <div key={ans.id} className={`p-3 rounded border ${ans.is_correct ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`}>
+                                                    <div className="flex justify-between">
+                                                        <span className="font-medium text-gray-800">
+                                                            {idx + 1}. {ans.question.question_text}
+                                                        </span>
+                                                        <span className={`text-sm font-bold ${ans.is_correct ? 'text-green-700' : 'text-red-700'}`}>
+                                                            {ans.is_correct ? 'Correct' : 'Incorrect'}
+                                                        </span>
+                                                    </div>
+                                                    <div className="mt-1 text-sm">
+                                                        <span className={ans.is_correct ? 'text-green-700' : 'text-red-700'}>
+                                                            Your Answer: {ans.question.choices[ans.selected_choice]}
+                                                        </span>
+                                                        {!ans.is_correct && (
+                                                            <span className="ml-4 text-green-700">
+                                                                Correct: {ans.question.choices[ans.question.correct_choice]}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="text-center text-red-500">Failed to load details</div>
+                                        )}
                                     </div>
                                 )}
                             </div>
