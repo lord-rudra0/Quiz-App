@@ -301,9 +301,26 @@ router.get('/results', async (req, res) => {
 router.get('/download/:attemptId', async (req, res) => {
     try {
         const { attemptId } = req.params;
-        const userId = req.user.id;
 
-        // Verify ownership
+        // 1. Create Authenticated Client
+        const supabase = createClient(
+            process.env.SUPABASE_URL,
+            process.env.SUPABASE_ANON_KEY,
+            {
+                global: {
+                    headers: {
+                        Authorization: req.headers.authorization,
+                    },
+                },
+            }
+        );
+
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        if (authError || !user) return res.status(401).json({ error: 'Unauthorized' });
+
+        const userId = user.id;
+
+        // 2. Verify ownership works via RLS automatically now, but we double check
         const { data: attempt, error: attemptError } = await supabase
             .from('quiz_attempts')
             .select('id, user_id')
