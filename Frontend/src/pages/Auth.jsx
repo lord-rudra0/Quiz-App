@@ -50,8 +50,8 @@ const Auth = () => {
                     password,
                 });
                 if (error) throw error;
-                // The App component will redirect to /dashboard as session changes
-                navigate('/dashboard');
+                // The App component will redirect to /quiz as session changes
+                navigate('/quiz');
             }
         } catch (err) {
             if (err.message.includes('User already registered') || err.message.includes('already registered')) {
