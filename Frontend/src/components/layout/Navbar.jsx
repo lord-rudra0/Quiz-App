@@ -10,6 +10,7 @@ const Navbar = () => {
     const [session, setSession] = useState(null);
     const [user, setUser] = useState(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -62,20 +63,53 @@ const Navbar = () => {
                                     <span>History</span>
                                 </button>
                                 <div className="w-px h-6 bg-slate-200 mx-1"></div>
-                                <div className="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center text-brand-600">
-                                    <UserIcon size={18} />
+
+                                {/* User Dropdown */}
+                                <div className="relative">
+                                    <button
+                                        onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                                        className="flex items-center gap-2 hover:bg-slate-50 p-1.5 rounded-lg transition-colors focus:outline-none"
+                                    >
+                                        <div className="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center text-brand-600">
+                                            <UserIcon size={18} />
+                                        </div>
+                                        <span className="font-medium text-slate-700">
+                                            {user?.user_metadata?.full_name || user?.email}
+                                        </span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`text-slate-400 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`}>
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </button>
+
+                                    {/* Dropdown Menu */}
+                                    <AnimatePresence>
+                                        {isUserMenuOpen && (
+                                            <>
+                                                <div
+                                                    className="fixed inset-0 z-40"
+                                                    onClick={() => setIsUserMenuOpen(false)}
+                                                ></div>
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                    className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-slate-100 z-50 overflow-hidden"
+                                                >
+                                                    <div className="p-1">
+                                                        <button
+                                                            onClick={handleLogout}
+                                                            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                                        >
+                                                            <LogOut size={16} />
+                                                            Logout
+                                                        </button>
+                                                    </div>
+                                                </motion.div>
+                                            </>
+                                        )}
+                                    </AnimatePresence>
                                 </div>
-                                <span className="font-medium">
-                                    {user?.user_metadata?.full_name || user?.email}
-                                </span>
                             </div>
-                            <button
-                                onClick={handleLogout}
-                                className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-red-600 transition-colors"
-                            >
-                                <LogOut size={18} />
-                                Logout
-                            </button>
                         </>
                     ) : (
                         <>
