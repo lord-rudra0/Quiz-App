@@ -63,7 +63,24 @@ router.post('/submit', async (req, res) => {
     try {
         const { answers } = req.body;
         // content of answers: [{ question_id, selected_choice }]
-        const userId = req.user.id; // from auth middleware
+
+        // Create an authenticated client for this request to respect RLS
+        const supabase = createClient(
+            process.env.SUPABASE_URL,
+            process.env.SUPABASE_ANON_KEY,
+            {
+                global: {
+                    headers: {
+                        Authorization: req.headers.authorization,
+                    },
+                },
+            }
+        );
+
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        if (authError || !user) return res.status(401).json({ error: 'Unauthorized' });
+
+        const userId = user.id;
 
         if (!answers || !Array.isArray(answers) || answers.length !== 5) {
             return res.status(400).json({ error: 'Must submit exactly 5 answers' });

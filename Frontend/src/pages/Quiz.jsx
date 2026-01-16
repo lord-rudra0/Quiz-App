@@ -54,6 +54,8 @@ const Quiz = () => {
         }
     };
 
+    const [result, setResult] = useState(null);
+
     const handleAnswerSelect = (questionId, choiceIndex) => {
         setAnswers(prev => ({
             ...prev,
@@ -65,15 +67,92 @@ const Quiz = () => {
         if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(prev => prev + 1);
         } else {
-            // Last question - for now just alert or log
-            console.log('Quiz Finished!', answers);
-            alert('Quiz Finished! (Submission coming in next phase)');
+            handleSubmit();
+        }
+    };
+
+    const handleSubmit = async () => {
+        try {
+            setLoading(true);
+            const { data: { session } } = await supabase.auth.getSession();
+
+            // Format answers for API
+            const formattedAnswers = Object.entries(answers).map(([qId, choiceIdx]) => ({
+                question_id: parseInt(qId),
+                selected_choice: choiceIdx
+            }));
+
+            // Validate exactly 5 answers
+            if (formattedAnswers.length !== 5) {
+                // If implied 5 questions, fill missing with -1 or handle error
+                // For this demo, let's assume user answered all (UI forces it?)
+                // Actually my Next button checks `answers[currentQuestion.id] === undefined`, 
+                // but user could skip if logic wasn't tight. 
+                // Let's just send what we have, backend validates count.
+            }
+
+            const response = await fetch('http://localhost:5000/api/quiz/submit', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${session.access_token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ answers: formattedAnswers })
+            });
+
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.error || 'Failed to submit quiz');
+            }
+
+            const data = await response.json();
+            setResult(data);
+        } catch (err) {
+            console.error(err);
+            setError(err.message);
+        } finally {
+            setLoading(false);
         }
     };
 
     if (loading) return (
-        <div className="min-h-screen flex items-center justify-center bg-brand-50">
+        <div className="fixed top-16 left-0 right-0 bottom-0 flex items-center justify-center bg-brand-50 z-0">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600"></div>
+        </div>
+    );
+
+    if (result) return (
+        <div className="fixed top-16 left-0 right-0 bottom-0 overflow-hidden bg-brand-50 py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-center z-0">
+            <div className="max-w-2xl mx-auto w-full bg-white rounded-lg shadow-lg overflow-hidden flex flex-col max-h-[80vh]">
+                <div className="p-8 border-b border-gray-100 text-center">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-2">Quiz Results</h2>
+                    <div className="text-5xl font-extrabold text-brand-600 mb-4">{result.score}</div>
+                    <p className="text-gray-600">Great job! Here is how you did:</p>
+                </div>
+
+                <div className="overflow-y-auto p-6 space-y-4 flex-grow">
+                    {result.results.map((res, idx) => {
+                        // Find original question text (simple lookup since order might vary or we use ID)
+                        // Actually result only sends { question_id, is_correct }. 
+                        // We have `questions` state locally.
+                        const q = questions.find(q => q.id === res.question_id);
+                        return (
+                            <div key={res.question_id} className={`p-4 rounded-lg border ${res.is_correct ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+                                <div className="flex justify-between items-start">
+                                    <div className="font-medium text-gray-900">{idx + 1}. {q?.question_text}</div>
+                                    <span className={`text-sm font-bold ${res.is_correct ? 'text-green-700' : 'text-red-700'}`}>
+                                        {res.is_correct ? 'Correct' : 'Incorrect'}
+                                    </span>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                <div className="p-6 bg-gray-50 border-t border-gray-100 flex justify-center">
+                    <Button onClick={() => window.location.reload()}>Take New Quiz</Button>
+                </div>
+            </div>
         </div>
     );
 
