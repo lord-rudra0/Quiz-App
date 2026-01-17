@@ -48,8 +48,8 @@ Authentication is handled by **Supabase Auth**.
 1.  **Frontend**: User logs in and receives a JWT (`access_token`).
 2.  **Backend**: The token is sent in the `Authorization: Bearer <token>` header.
 3.  **Validation**:
-    - The backend uses the `SUPABASE_JWT_SECRET` to verify the token signature locally using the `jsonwebtoken` library.
-    - It extracts the `sub` claim (User ID) to identify the user.
+    - The backend uses `supabase.auth.getUser(token)` to validate the JWT against Supabase's Auth API.
+    - This ensures that the token is not only valid in signature but also that the user exists and has not been revoked.
     - This ensures we never trust client-side user IDs and always strictly scope data access.
 
 ## 🚀 How to Run Locally
@@ -143,3 +143,8 @@ Returns all past attempts.
 GET /api/quiz/results
 Authorization: Bearer <your_jwt_token>
 ```
+
+## 📝 Assumptions & Notes
+- **Database Schema**: The `quiz_questions` table uses a `choices` JSONB array column instead of individual `option_a`, `option_b`, etc., columns. This allows for flexible option counts (though currently fixed at 4).
+- **Authentication**: We prioritize security by validating tokens directly with Supabase (`getUser`) on every request. This ensures strictly up-to-date user sessions.
+- **Frontend URL**: The backend assumes CORS access from `http://localhost:5173` (Vite default). Update `server.js` cors options for production.
