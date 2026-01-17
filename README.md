@@ -11,6 +11,17 @@ Welcome to the Quiz Application! This is a full-stack project featuring a **Reac
 - **`Frontend/`**: The React application (Vite, Tailwind CSS).
 - **`Backend/`**: The Express API (Node.js, Supabase Client).
 
+## ✨ Notes / Highlights
+
+- **Frontend built with React**
+- **Backend built with Express.js**
+- **Authentication via Supabase** (Email/Password + Google OAuth)
+- **Secure APIs** using JWT verification
+- **Supabase PostgreSQL** with Row Level Security (RLS)
+- **Single protected Quiz page** handling quiz, results, and history
+- **Users can view and download** their own quiz attempts
+
+
 ## 🛠 Prerequisites
 
 To run this project, you will need:
