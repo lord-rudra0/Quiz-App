@@ -10,11 +10,38 @@ const QuestionCard = ({
     user,
     onAnswerSelect,
     onNext,
+    onTimeout,
     onViewHistory
 }) => {
     // 0-based index for display logic
     const isAnswered = answers[question.id] !== undefined;
     const isLastQuestion = index === totalQuestions - 1;
+    const [timeLeft, setTimeLeft] = React.useState(30);
+
+    React.useEffect(() => {
+        setTimeLeft(30);
+    }, [question.id]);
+
+    React.useEffect(() => {
+        if (isAnswered) return; // Stop timer if already answered
+
+        if (timeLeft <= 0) {
+            onTimeout();
+            return;
+        }
+
+        const timerId = setInterval(() => {
+            setTimeLeft(prev => prev - 1);
+        }, 1000);
+
+        return () => clearInterval(timerId);
+    }, [timeLeft, isAnswered, onTimeout]);
+
+    const getTimerColor = () => {
+        if (timeLeft > 10) return 'text-brand-600 bg-brand-100';
+        if (timeLeft > 5) return 'text-orange-600 bg-orange-100';
+        return 'text-red-600 bg-red-100 animate-pulse';
+    };
 
     return (
         <div className="fixed top-16 left-0 right-0 bottom-0 overflow-y-auto bg-brand-50 py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-start z-0">
@@ -26,10 +53,17 @@ const QuestionCard = ({
                         </h1>
                         <p className="mt-2 text-gray-600">General Knowledge Quiz</p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-right flex flex-col gap-2 items-end">
                         <span className="text-sm font-medium text-brand-600 bg-brand-100 px-3 py-1 rounded-full">
                             Question {index + 1} of {totalQuestions}
                         </span>
+                        <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold transition-colors ${getTimerColor()}`}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            {timeLeft}s
+                        </div>
                     </div>
                 </div>
 
