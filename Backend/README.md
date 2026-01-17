@@ -3,9 +3,10 @@
 This is the backend API for the Quiz Application, built with **Express (Node.js)** and **Supabase**.
 
 ## 🛠 Tech Stack
-- **Framework**: Express.js (Node.js)
+- **Frontend**: React (Vite) + Tailwind CSS
+- **Backend Framework**: Express.js (Node.js)
 - **Database**: Supabase PostgreSQL
-- **Authentication**: Supabase Auth (JWT)
+- **Authentication**: Supabase Auth (JWT),Google Auth
 - **Security**: Row Level Security (RLS) + Server-side JWT Verification
 
 ## 🗄️ Database
@@ -14,6 +15,7 @@ We use **Supabase (PostgreSQL)** because it provides:
 - Row Level Security (RLS) for granular data access control.
 - PostgreSQL's robustness and reliability.
 - easy-to-use JS client.
+-Easy to implement Google Auth.
 
 ### Schema Structure
 
@@ -57,7 +59,11 @@ Authentication is handled by **Supabase Auth**.
 - A Supabase project with the schema set up.
 
 ### Steps
-1.  **Clone the repository** and navigate to `Backend`:
+  
+### Clone the repo 
+https://github.com/lord-rudra0/Quiz-App
+#### Backend
+1.  **Navigate to Backend**:
     ```bash
     cd Backend
     ```
@@ -77,6 +83,20 @@ Authentication is handled by **Supabase Auth**.
     ```bash
     npm start
     # Server runs on port 5000 by default
+    ```
+
+#### Frontend
+1.  **Navigate to Frontend** (in a new terminal):
+    ```bash
+    cd ../Frontend
+    ```
+2.  **Install Dependencies**:
+    ```bash
+    npm install
+    ```
+3.  **Start Dev Server**:
+    ```bash
+    npm run dev
     ```
 
 ## 📡 API Examples
