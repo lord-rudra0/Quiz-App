@@ -9,7 +9,6 @@ import Button from '../ui/Button';
 const Navbar = () => {
     const [session, setSession] = useState(null);
     const [user, setUser] = useState(null);
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -30,10 +29,8 @@ const Navbar = () => {
     const handleLogout = async () => {
         await supabase.auth.signOut();
         navigate('/login');
-        setIsMenuOpen(false);
+        setIsUserMenuOpen(false);
     };
-
-    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
     return (
         <nav className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-slate-200">
@@ -123,75 +120,71 @@ const Navbar = () => {
                     )}
                 </div>
 
-                {/* Mobile Toggle */}
-                <button
-                    onClick={toggleMenu}
-                    className="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-md transition-colors"
-                >
-                    {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                </button>
-            </div>
+                {/* Mobile Icons (Visible only on small screens) */}
+                <div className="flex md:hidden items-center gap-4">
+                    {session ? (
+                        <>
+                            <button
+                                onClick={() => window.dispatchEvent(new CustomEvent('open-history'))}
+                                className="p-2 text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
+                                title="View History"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                            </button>
 
-            {/* Mobile Menu */}
-            <AnimatePresence>
-                {isMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="md:hidden border-t border-slate-200 bg-white"
-                    >
-                        <div className="p-4 flex flex-col gap-4">
-                            {session ? (
-                                <>
-                                    <div className="flex items-center gap-3 text-sm text-slate-600 pb-4 border-b border-slate-100">
-                                        <div className="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center text-brand-600">
-                                            <UserIcon size={18} />
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <span className="font-medium text-slate-900">Signed in as</span>
-                                            <span className="text-slate-500">{user?.user_metadata?.full_name || user?.email}</span>
-                                        </div>
-                                    </div>
-                                    <button
-                                        onClick={() => {
-                                            window.dispatchEvent(new CustomEvent('open-history'));
-                                            setIsMenuOpen(false);
-                                        }}
-                                        className="flex w-full items-center justify-center gap-2 px-4 py-2 rounded-lg bg-brand-50 text-brand-700 font-medium hover:bg-brand-100 transition-colors"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <polyline points="12 6 12 12 16 14"></polyline>
-                                        </svg>
-                                        View History
-                                    </button>
-                                    <button
-                                        onClick={handleLogout}
-                                        className="flex w-full items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-50 text-red-600 font-medium hover:bg-red-100 transition-colors"
-                                    >
-                                        <LogOut size={18} />
-                                        Logout
-                                    </button>
-                                </>
-                            ) : (
-                                <>
-                                    <Link
-                                        to="/auth"
-                                        onClick={() => setIsMenuOpen(false)}
-                                        className="block w-full text-center py-2 text-slate-600 hover:text-brand-600 font-medium"
-                                    >
-                                        Login
-                                    </Link>
-                                    <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                                        <Button className="w-full ring-2 ring-brand-200 shadow-md">Sign Up</Button>
-                                    </Link>
-                                </>
-                            )}
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                            <div className="relative">
+                                <button
+                                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                                    className="p-1 rounded-full bg-brand-100 text-brand-600 transition-colors"
+                                >
+                                    <UserIcon size={24} />
+                                </button>
+
+                                {/* Mobile User Dropdown */}
+                                <AnimatePresence>
+                                    {isUserMenuOpen && (
+                                        <>
+                                            <div
+                                                className="fixed inset-0 z-40"
+                                                onClick={() => setIsUserMenuOpen(false)}
+                                            ></div>
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-slate-100 z-50 overflow-hidden"
+                                            >
+                                                <div className="p-3 border-b border-gray-100">
+                                                    <p className="text-sm font-semibold text-gray-900 truncate">
+                                                        {user?.user_metadata?.full_name || 'User'}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                                                </div>
+                                                <div className="p-1">
+                                                    <button
+                                                        onClick={handleLogout}
+                                                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                                    >
+                                                        <LogOut size={16} />
+                                                        Logout
+                                                    </button>
+                                                </div>
+                                            </motion.div>
+                                        </>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        </>
+                    ) : (
+                        <Link to="/auth">
+                            <Button className="px-4 py-2 text-sm">Login</Button>
+                        </Link>
+                    )}
+                </div>
+            </div>
         </nav>
     );
 };
