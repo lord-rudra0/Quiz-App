@@ -1,8 +1,22 @@
 
 import React from 'react';
 import Button from '../ui/Button';
+import confetti from 'canvas-confetti';
+
 
 const ResultsView = ({ result, questions, onRetry, onViewHistory }) => {
+    React.useEffect(() => {
+        if (result.score > 60) {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+            const audio = new Audio('/sounds/ding.wav');
+            audio.play().catch(e => console.error("Audio play failed", e));
+        }
+    }, [result.score]);
+
     return (
         <div className="fixed top-16 left-0 right-0 bottom-0 overflow-hidden bg-brand-50 py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-center z-0">
             <div className="max-w-2xl mx-auto w-full bg-white rounded-lg shadow-lg overflow-hidden flex flex-col max-h-[80vh]">

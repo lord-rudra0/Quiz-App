@@ -83,26 +83,7 @@ const Quiz = () => {
         }
     };
 
-    const handleTimeout = () => {
-        const currentQId = questions[currentQuestionIndex].id;
 
-        // If question already answered, just move on.
-        // If not, mark as -1 (Timeout/Wrong).
-        const alreadyAnswered = answers[currentQId] !== undefined;
-
-        if (alreadyAnswered) {
-            handleNext();
-        } else {
-            const newAnswers = { ...answers, [currentQId]: -1 };
-            setAnswers(newAnswers);
-
-            if (currentQuestionIndex < questions.length - 1) {
-                setCurrentQuestionIndex(prev => prev + 1);
-            } else {
-                handleSubmit(newAnswers);
-            }
-        }
-    };
 
     const handleSubmit = async (answersOverride = null) => {
         try {
@@ -172,7 +153,7 @@ const Quiz = () => {
             user={user}
             onAnswerSelect={handleAnswerSelect}
             onNext={handleNext}
-            onTimeout={handleTimeout}
+
             onViewHistory={() => setView('history')}
         />
     );
