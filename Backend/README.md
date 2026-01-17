@@ -60,7 +60,7 @@ Authentication is handled by **Supabase Auth**.
 
 ### Steps
   
-### Clone the repo 
+### Clone the repo  
 https://github.com/lord-rudra0/Quiz-App
 #### Backend
 1.  **Navigate to Backend**:

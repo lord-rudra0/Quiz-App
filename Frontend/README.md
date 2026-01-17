@@ -1,16 +1,54 @@
-# React + Vite
+# Quiz App Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The frontend for the Quiz Application, built with **React (Vite)** and **Tailwind CSS**. It connects to the backend API and Supabase for authentication and data.
 
-Currently, two official plugins are available:
+## 🛠 Tech Stack
+- **Framework**: React 19 (Vite)
+- **Styling**: Tailwind CSS 
+- **Routing**: React Router DOM
+- **Icons**: Lucide React
+- **Animations**: Framer Motion
+- **State/Auth**: Supabase Client
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Getting Started
 
-## React Compiler
+### Prerequisites
+- Node.js installed.
+- Backend server running (default: `http://localhost:5000`).
+- Supabase project set up.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Installation
 
-## Expanding the ESLint configuration
+1.  **Navigate to the Frontend directory**:
+    ```bash
+    cd Frontend
+    ```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+2.  **Install Dependencies**:
+    ```bash
+    npm install
+    ```
+
+3.  **Environment Setup**:
+    - Copy `.env.example` to `.env`:
+        ```bash
+        cp .env.example .env
+        ```
+    - Update the variables in `.env`:
+        ```env
+        VITE_SUPABASE_URL=your_supabase_project_url
+        VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+        VITE_API_URL=http://localhost:5000 # Or your deployed backend URL
+        ```
+
+4.  **Start Development Server**:
+    ```bash
+    npm run dev
+    ```
+    The app should now be running at `http://localhost:5173` (or similar).
+
+## 📂 Project Structure
+- `src/components`: Reusable UI components.
+- `src/pages`: Main application pages (Auth, Quiz, etc.).
+- `src/contexts`: React Contexts (e.g., AuthContext).
+- `src/services`: API service calls.
