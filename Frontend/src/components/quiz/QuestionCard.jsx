@@ -56,7 +56,10 @@ const QuestionCard = ({
                                     return (
                                         <div
                                             key={i}
-                                            onClick={() => onAnswerSelect(question.id, i)}
+                                            onClick={() => {
+                                                new Audio('/sounds/ding.wav').play().catch(e => console.error("Audio play error:", e));
+                                                onAnswerSelect(question.id, i);
+                                            }}
                                             className={`p-4 border rounded-lg transition-all cursor-pointer flex items-center ${isSelected
                                                 ? 'border-brand-500 bg-brand-50 shadow-sm'
                                                 : 'border-gray-200 hover:border-brand-200 hover:bg-gray-50'
