@@ -20,7 +20,7 @@ const HistoryView = ({ onBack }) => {
             const { data: { session } } = await supabase.auth.getSession();
             const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-            const response = await fetch(`${API_URL}/api/quiz/history`, {
+            const response = await fetch(`${API_URL}/api/quiz/results`, {
                 headers: {
                     'Authorization': `Bearer ${session.access_token}`
                 }
@@ -145,8 +145,8 @@ const HistoryView = ({ onBack }) => {
                                             onClick={(e) => handleDownload(attempt.id, e)}
                                             disabled={downloadingIds[attempt.id]}
                                             className={`p-1.5 border-brand-200 text-brand-700 aspect-square flex items-center justify-center rounded-md disabled:cursor-wait ${downloadingIds[attempt.id]
-                                                    ? 'bg-brand-100 opacity-100 border-brand-300'
-                                                    : 'bg-white hover:bg-brand-50'
+                                                ? 'bg-brand-100 opacity-100 border-brand-300'
+                                                : 'bg-white hover:bg-brand-50'
                                                 }`}
                                             title="Download Results"
                                         >

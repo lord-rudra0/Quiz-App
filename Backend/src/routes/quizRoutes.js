@@ -9,7 +9,7 @@ router.use(authMiddleware);
 // Routes
 router.get('/', quizController.getQuizQuestions);
 router.post('/submit', quizController.submitQuiz);
-router.get('/history', quizController.getHistory);
+router.get('/results', quizController.getHistory);
 router.get('/history/:attemptId', quizController.getAttemptDetails);
 router.get('/download/:attemptId', quizController.downloadAttempt);
 
